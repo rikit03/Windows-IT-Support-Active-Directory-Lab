@@ -1,196 +1,271 @@
 # Active Directory IT Administration Lab
 
-## Project Overview
+## 📌 Project Overview
 
-This is an independent hands-on lab designed to simulate a small business **Active Directory environment** using Windows Server 2022 and Windows 11 virtual machines.
+This project is a hands-on **Active Directory IT Administration Lab** built to simulate a small business Windows domain environment.
 
-The project focuses on practical IT administration skills including Active Directory Domain Services, DNS, user and group management, Group Policy, Windows domain joining, file permissions, PowerShell administration, and IT troubleshooting.
+The lab demonstrates practical skills in:
 
-The environment is being built incrementally, with each major configuration and troubleshooting milestone documented through technical evidence and screenshots.
+* Active Directory Domain Services (AD DS)
+* Windows Server 2022 administration
+* DNS configuration
+* Organizational Unit (OU) management
+* User and security group management
+* Group Policy
+* Account security and password policies
+* Windows 11 domain client administration
+* PowerShell-based administration
 
----
-
-## Lab Environment
-
-| Component             | Configuration                |
-| --------------------- | ---------------------------- |
-| Server                | Windows Server 2022          |
-| Client                | Windows 11                   |
-| Virtualization        | Oracle VirtualBox            |
-| Domain Controller     | DC01                         |
-| Planned Domain        | `corp.albion.local`          |
-| Private Network       | VirtualBox Host-Only Network |
-| Internet Connectivity | VirtualBox NAT               |
+> **Project Status:** Steps 1–7 completed. Windows 11 client configuration is the next phase.
 
 ---
 
-## Network Architecture
+## 🖥️ Lab Environment
 
-The lab uses a dual-network design. NAT provides internet connectivity, while the Host-Only network provides private communication between the Domain Controller and Windows 11 client.
-
-```text
-                         Internet
-                            │
-                           NAT
-                            │
-                    ┌───────────────┐
-                    │     DC01      │
-                    │ Windows Server │
-                    │     2022      │
-                    └───────┬───────┘
-                            │
-                    Host-Only Network
-                            │
-                    ┌───────┴───────┐
-                    │   Windows 11  │
-                    │     Client    │
-                    └───────────────┘
-```
+| Component               | Configuration                |
+| ----------------------- | ---------------------------- |
+| Host OS                 | Windows 11                   |
+| Domain Controller       | Windows Server 2022          |
+| Client OS               | Windows 11                   |
+| Virtualization          | Oracle VirtualBox            |
+| Domain Controller Name  | DC01                         |
+| Active Directory Domain | `corp.albion.local`          |
+| NetBIOS Name            | `CORP`                       |
+| Private Network         | VirtualBox Host-Only Network |
+| Internet Network        | VirtualBox NAT               |
+| DC01 Private IP         | `192.168.56.10`              |
+| Windows 11 Private IP   | `192.168.56.20`              |
+| Subnet Mask             | `255.255.255.0`              |
+| DNS Server              | `192.168.56.10`              |
 
 ---
 
-## Completed Work
+# Phase 1 — Server Environment Setup
 
-### 1. Windows Server 2022 Deployment
+### Completed
 
-* Deployed Windows Server 2022 as a virtual machine using VirtualBox.
-* Completed the Windows Server installation.
-* Configured the virtual machine for the lab environment.
-* Removed the Windows Server installation ISO from the virtual DVD drive after installation.
+* Installed Windows Server 2022.
 * Renamed the server to **DC01**.
+* Configured VirtualBox networking.
+* Configured:
 
-### 2. Virtual Network Configuration
+  * Adapter 1 → NAT
+  * Adapter 2 → Host-Only
+* Configured a static IP address for the private AD network.
+* Configured DC01 as the DNS server for the domain environment.
+* Verified the server network configuration.
 
-* Configured a VirtualBox Host-Only network for the private lab environment.
-* Configured DC01 to use the Host-Only network for communication with the future Windows 11 client.
-* Configured NAT connectivity for internet access.
-* Verified that internet connectivity is working on DC01.
+### Evidence
 
-### 3. Initial Network Preparation
-
-* Configured the server's private network addressing.
-* Prepared DC01 for its future role as the Active Directory Domain Controller and DNS server.
-
----
-
-## Current Project Status
-
-**Phase 1 — Infrastructure Setup: COMPLETE ✅**
-
-The Windows Server 2022 environment and basic networking have been prepared.
-
-**Phase 2 — Active Directory Configuration: NEXT**
-
-Planned tasks:
-
-* [ ] Install Active Directory Domain Services (AD DS)
-* [ ] Install/configure DNS
-* [ ] Promote DC01 to Domain Controller
-* [ ] Create `corp.albion.local` domain
-* [ ] Verify Active Directory and DNS functionality
-* [ ] Create Organizational Units (OUs)
-* [ ] Create domain users
-* [ ] Create security groups
-* [ ] Configure Group Policy
-* [ ] Configure password and account lockout policies
-* [ ] Configure Windows 11 client
-* [ ] Join Windows 11 to the domain
-* [ ] Test domain user authentication
-* [ ] Configure shared folders and NTFS permissions
-* [ ] Perform Active Directory administration using PowerShell
-* [ ] Create and resolve a realistic IT support troubleshooting scenario
-* [ ] Document the completed environment
+* `01-server-baseline.png`
+* `02-static-ip-dns.png`
 
 ---
 
-## Organizational Unit Structure
+# Phase 2 — Active Directory Domain Services
 
-The planned Active Directory structure will be:
+### Completed
+
+Installed and configured **Active Directory Domain Services (AD DS)** on DC01.
+
+Created a new Active Directory forest:
 
 ```text
 corp.albion.local
-│
-├── Users
-│   ├── IT
-│   ├── HR
-│   ├── Finance
-│   └── Sales
-│
-├── Computers
-│   ├── Workstations
-│   └── IT-Computers
-│
+```
+
+### Domain Controller Configuration
+
+* Domain Controller: `DC01`
+* Forest: `corp.albion.local`
+* NetBIOS Name: `CORP`
+* DNS Server: Enabled
+* Global Catalog: Enabled
+* Read-only domain controller: Disabled
+* Forest functional level: Windows Server 2016
+* Domain functional level: Windows Server 2016
+* DNS delegation: Not configured
+
+DC01 was successfully promoted as the domain controller.
+
+---
+
+# Phase 3 — Active Directory Structure
+
+Created organizational units to organize users and groups.
+
+### User Organization
+
+```text
+corp.albion.local
+└── Users
+    ├── IT
+    ├── HR
+    ├── Finance
+    └── Sales
+```
+
+### Groups Organization
+
+```text
+corp.albion.local
 └── Groups
 ```
 
-This structure will be implemented during the Active Directory configuration phase.
+---
+
+# Phase 4 — User Administration
+
+Created test domain users for the lab environment.
+
+### Test Users
+
+| User          | Username  | Department |
+| ------------- | --------- | ---------- |
+| Alex Morgan   | `amorgan` | IT         |
+| Taylor Morgan | `tmorgan` | HR         |
+| Jordan Lee    | `jlee`    | Finance    |
+| Sarah Chen    | `schen`   | Sales      |
+
+The built-in Active Directory accounts such as **Administrator** and **Guest** were left unchanged.
 
 ---
 
-## Evidence
+# Phase 5 — Security Group Administration
 
-Only completed work is documented with screenshots.
-
-### Screenshot 01 — Server Baseline
-
-Shows the Windows Server 2022 environment configured as **DC01**.
-
-### Screenshot 02 — Network Configuration
-
-Shows the network/IP configuration used to prepare DC01 for the Active Directory environment.
-
-Additional screenshots will be added as major technical milestones are completed.
-
----
-
-## Planned Technical Skills Demonstrated
-
-By completion, this project will demonstrate hands-on experience with:
-
-* Windows Server 2022
-* Active Directory Domain Services
-* DNS
-* Domain Controllers
-* Organizational Units
-* User and group administration
-* Security groups
-* Group Policy
-* Password and account lockout policies
-* Windows 11 domain joining
-* Domain authentication
-* NTFS permissions
-* Shared folders
-* PowerShell
-* IT troubleshooting
-* Technical documentation
-
----
-
-## Tools & Technologies
-
-* **Windows Server 2022**
-* **Windows 11**
-* **Oracle VirtualBox**
-* **Active Directory Domain Services**
-* **DNS**
-* **Group Policy**
-* **PowerShell**
-* **NTFS Permissions**
-* **VirtualBox Host-Only Networking**
-* **NAT Networking**
-
----
-
-## Project Objective
-
-The objective of this lab is to build and administer a realistic Windows-based business environment from the ground up.
-
-The project emphasizes practical IT administration tasks that are relevant to **Service Desk, IT Support, Desktop Support, MSP, and Junior Systems Administration roles**.
-
-The lab follows an evidence-based approach:
+Created the following security groups:
 
 ```text
-Configure → Test → Troubleshoot → Verify → Document
+IT-Admins
+IT-Support
+HR-Users
+Finance-Users
+Sales-Users
 ```
 
-All configurations, tests, and troubleshooting activities will be documented as the project progresses.
+### Group Membership
+
+| Security Group | Member        |
+| -------------- | ------------- |
+| IT-Admins      | Alex Morgan   |
+| IT-Support     | Alex Morgan   |
+| HR-Users       | Taylor Morgan |
+| Finance-Users  | Jordan Lee    |
+| Sales-Users    | Sarah Chen    |
+
+The groups were configured as:
+
+* **Group Scope:** Global
+* **Group Type:** Security
+
+---
+
+# Phase 6 — Group Policy
+
+Created and linked the following Group Policy Object:
+
+```text
+Corp-Password-Policy
+```
+
+The policy was linked to the:
+
+```text
+corp.albion.local
+```
+
+domain.
+
+## Password Policy
+
+Configured:
+
+* Password history: **5 passwords**
+* Maximum password age: **90 days**
+* Minimum password age: **1 day**
+* Minimum password length: **8 characters**
+* Password complexity requirements: **Enabled**
+* Reversible password encryption: **Disabled**
+
+## Account Lockout Policy
+
+Configured:
+
+* Account lockout threshold: **5 invalid attempts**
+* Account lockout duration: **15 minutes**
+* Reset account lockout counter after: **15 minutes**
+
+The policy was updated using:
+
+```cmd
+gpupdate /force
+```
+
+Policy application can be verified using:
+
+```cmd
+gpresult /r
+```
+
+---
+
+# 📸 Current Project Evidence
+
+Current screenshots include:
+
+```text
+screenshots/
+├── 01-server-baseline.png
+├── 02-static-ip-dns.png
+├── 07-password-policy.png
+└── 07b-account-lockout-policy.png
+```
+
+Additional screenshots will be added as each phase is completed.
+
+---
+
+# ⏭️ Next Phase
+
+## Windows 11 Client Configuration
+
+The next stage is to configure the Windows 11 client for the private Active Directory network.
+
+Planned configuration:
+
+```text
+Windows 11 Client
+├── Adapter 1 → NAT → Internet
+└── Adapter 2 → Host-Only → AD Network
+```
+
+Private network configuration:
+
+```text
+IP Address:       192.168.56.20
+Subnet Mask:      255.255.255.0
+Default Gateway:  [Blank]
+Preferred DNS:    192.168.56.10
+```
+
+After configuration, connectivity will be tested using:
+
+```cmd
+ping 192.168.56.10
+```
+
+DNS will then be verified before joining the Windows 11 client to:
+
+```text
+corp.albion.local
+```
+
+---
+
+## 🎯 Project Goal
+
+The completed lab will demonstrate practical entry-level IT administration skills including:
+
+**Configure → Administer → Troubleshoot → Verify → Document**
+
+The final project will simulate common tasks performed by an **IT Support Technician, Service Desk Analyst, Desktop Support Technician, or Junior Systems Administrator** in a Windows/Active Directory environment.
