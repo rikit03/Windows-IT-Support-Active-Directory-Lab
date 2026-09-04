@@ -1,193 +1,252 @@
-# Windows IT Support & Active Directory Administration Lab
+# Windows IT Support & Active Directory Lab
 
-A hands-on Windows IT support and systems administration lab designed to simulate a small business Active Directory environment.
+A hands-on Windows IT support and Active Directory administration lab designed to demonstrate practical experience with **Windows Server 2022, Active Directory Domain Services (AD DS), DNS, Group Policy, Windows 11, user administration, security groups, domain authentication, and troubleshooting**.
 
-This project demonstrates practical experience with **Windows Server 2022, Active Directory Domain Services (AD DS), DNS, Windows 11 domain clients, Group Policy, user and group administration, network configuration, authentication, and structured troubleshooting**.
+This project simulates a small business Windows environment where an IT support technician is responsible for deploying and managing a domain controller, configuring users and groups, joining workstations to the domain, implementing security policies, and verifying the environment.
 
-The lab was independently designed and built to strengthen practical skills relevant to **L1 IT Support, Service Desk, Desktop Support, Technical Support, and Junior Systems Administration** roles.
-
----
-
-## Project Overview
-
-The goal of this lab was to build and administer a functional Windows domain environment from the ground up.
-
-The environment simulates a small organization called **Albion Corporation**, with centralized identity management provided by a Windows Server 2022 domain controller and Windows 11 client computers.
-
-The project covers the complete workflow from:
-
-**Server deployment → Network configuration → Active Directory → DNS → Users & Groups → Group Policy → Domain Join → Authentication → Troubleshooting → Verification**
-
-Rather than only configuring individual technologies, the lab focuses on understanding how these components work together in a real IT support environment.
+> **Project Type:** Independent Hands-On Lab
+> **Focus:** IT Support · Active Directory · Windows Administration · DNS · Group Policy · Troubleshooting
+> **Environment:** Windows Server 2022 + Windows 11
+> **Virtualization:** Oracle VirtualBox
+> **Status:** Core lab implementation completed
 
 ---
 
-## Business Scenario
+## 📌 Project Overview
 
-Albion Corporation requires a centralized Windows environment where IT administrators can:
+The goal of this project was to build a realistic Windows domain environment from the ground up and practice common tasks performed by **IT Support Technicians, Service Desk Analysts, Desktop Support Technicians, and Junior System Administrators**.
 
-* Manage employee accounts centrally
-* Organize users by department
-* Control access using security groups
-* Apply standardized security policies
-* Authenticate Windows clients against Active Directory
-* Manage DNS for the internal domain
-* Join Windows workstations to the corporate domain
-* Troubleshoot authentication and connectivity issues
-* Establish repeatable administrative procedures
+The lab includes:
 
-The lab was designed to replicate these requirements in an isolated virtual environment.
+* Windows Server 2022 domain controller
+* Active Directory Domain Services
+* Internal DNS
+* Windows 11 domain-joined workstation
+* Organizational Units (OUs)
+* Domain user accounts
+* Security groups
+* Group Policy
+* Password security policies
+* Account lockout policies
+* Static IP addressing
+* DNS configuration
+* Domain authentication
+* Active Directory computer management
+* Windows troubleshooting and verification
+
+The project was built independently as a hands-on portfolio project to demonstrate practical Windows infrastructure and IT support skills.
 
 ---
 
-## Lab Architecture
+# 🏢 Business Scenario
+
+The environment represents a fictional organization called **Albion University**.
+
+The organization requires centralized management of employee identities, computers, authentication, and security policies.
+
+As the IT support administrator, the objective was to build a Windows domain environment that allows users and computers to be centrally managed through Active Directory.
+
+---
+
+# 🖥️ Lab Architecture
+
+The lab consists of two virtual machines running in Oracle VirtualBox.
 
 ```text
-                         Internet
-                            │
-                           NAT
-                            │
-                  ┌─────────────────────┐
-                  │ Windows Server 2022  │
-                  │        DC            │
-                  │                     │
-                  │ AD DS               │
-                  │ DNS                 │
-                  │ Group Policy        │
-                  │ Domain Controller   │
-                  │                     │
-                  │ 192.168.56.20       │
-                  └──────────┬──────────┘
-                             │
-                    Host-Only Network
-                    192.168.56.0/24
-                             │
-                  ┌──────────┴──────────┐
-                  │                     │
-          ┌───────────────┐     ┌───────────────┐
-          │ Windows 11    │     │ Future Clients │
-          │ Domain Client │     │ / Lab Systems  │
-          │               │     │                │
-          │ 192.168.56.10 │     │    Planned     │
-          └───────────────┘     └───────────────┘
+                         ┌─────────────────────────────┐
+                         │      Windows Server 2022    │
+                         │                             │
+                         │ Hostname: DC                │
+                         │ IP: 192.168.56.20           │
+                         │                             │
+                         │ Active Directory            │
+                         │ DNS Server                  │
+                         │ Group Policy                │
+                         └──────────────┬──────────────┘
+                                        │
+                                Host-Only Network
+                                  192.168.56.0/24
+                                        │
+                         ┌──────────────┴──────────────┐
+                         │         Windows 11          │
+                         │         Client VM            │
+                         │                             │
+                         │ IP: 192.168.56.10           │
+                         │ Domain: corp.albion.local   │
+                         └─────────────────────────────┘
 ```
 
-### Network Configuration
+### Virtual Network
 
-| Device     | Role                    | IP Address      | DNS             |
-| ---------- | ----------------------- | --------------- | --------------- |
-| `DC`       | Domain Controller / DNS | `192.168.56.20` | Local DNS       |
-| Windows 11 | Domain Client           | `192.168.56.10` | `192.168.56.20` |
+Each virtual machine uses:
 
-**Subnet:** `255.255.255.0`
+* **Host-Only Adapter** — internal communication between the lab machines
+* **NAT Adapter** — internet connectivity
 
-The Host-Only network provides isolated communication between the domain controller and Windows 11 client, while NAT provides external connectivity where required.
+The Host-Only network provides an isolated environment for Active Directory, DNS, and domain communication.
 
 ---
 
-# Technologies Used
+# 🌐 Network Configuration
 
-### Microsoft / Windows
+| Device              | Hostname | IP Address      | DNS             |
+| ------------------- | -------- | --------------- | --------------- |
+| Windows Server 2022 | `DC`     | `192.168.56.20` | `192.168.56.20` |
+| Windows 11          | Client   | `192.168.56.10` | `192.168.56.20` |
+
+Subnet:
+
+```text
+192.168.56.0/24
+```
+
+Subnet mask:
+
+```text
+255.255.255.0
+```
+
+The Windows 11 client uses the domain controller as its DNS server so that it can resolve the internal Active Directory domain.
+
+---
+
+# 🔧 Technologies Used
+
+### Operating Systems
 
 * Windows Server 2022
 * Windows 11
+
+### Microsoft Technologies
+
 * Active Directory Domain Services
 * DNS
 * Group Policy
 * Active Directory Users and Computers
-* Organizational Units
-* Security Groups
-* Domain Authentication
-* Windows networking
-
-### Administration & Troubleshooting
-
-* PowerShell
-* Command Prompt
-* `gpupdate`
-* `gpresult`
-* `ipconfig`
-* `ping`
-* `nslookup`
-* `whoami`
-* `hostname`
+* Group Policy Management
+* Windows domain authentication
 
 ### Virtualization
 
 * Oracle VirtualBox
-* NAT networking
-* Host-Only networking
+
+### Administration & Troubleshooting
+
+* Command Prompt
+* PowerShell
+* `ipconfig`
+* `ping`
+* `nslookup`
+* `whoami`
+* `gpupdate`
+* `gpresult`
 
 ---
 
-# Implementation
+# 🚀 Implementation & Steps Performed
 
 ## 1. Windows Server 2022 Deployment
 
-A Windows Server 2022 virtual machine was deployed using Oracle VirtualBox.
+The first step was deploying a Windows Server 2022 virtual machine to act as the domain controller.
 
-The server was configured as the primary domain controller for the lab environment.
+### Configuration performed
+
+* Installed Windows Server 2022
+* Configured the server hostname as `DC`
+* Configured the Host-Only network adapter
+* Assigned a static IP address
+* Configured DNS
+* Installed the Active Directory Domain Services role
+* Installed the DNS Server role
+* Promoted the server to a domain controller
+* Created the `corp.albion.local` Active Directory domain
 
 ### Server Configuration
 
-* Hostname: `DC`
-* Operating System: Windows Server 2022
-* Role: Domain Controller
-* DNS Server: Enabled
-* Network: Host-Only + NAT
+```text
+Hostname:       DC
+Operating System: Windows Server 2022
+IP Address:     192.168.56.20
+Subnet Mask:    255.255.255.0
+Domain:         corp.albion.local
+```
 
-The initial server configuration was verified before proceeding with Active Directory deployment.
+### Verification
+
+The server baseline and configuration were captured during the implementation.
+
+![Windows Server Baseline](screenshots/01-server-baseline.png)
 
 ---
 
-## 2. Static IP & DNS Configuration
+# 2. Static IP & DNS Configuration
 
-The domain controller was configured with a static IP address:
+A static IP address was configured on the domain controller to provide a consistent address for Active Directory and DNS services.
+
+The Windows 11 workstation was configured to use the domain controller as its DNS server.
+
+### Windows Server
 
 ```text
 IP Address:      192.168.56.20
 Subnet Mask:     255.255.255.0
+DNS Server:      192.168.56.20
 ```
 
-The Windows 11 client was configured with:
+### Windows 11
 
 ```text
 IP Address:      192.168.56.10
 Subnet Mask:     255.255.255.0
-Preferred DNS:   192.168.56.20
+DNS Server:      192.168.56.20
 ```
 
-Using the domain controller as the client's DNS server is critical for reliable Active Directory name resolution and domain authentication.
+The Host-Only adapter does not use a default gateway because it is dedicated to internal lab communication.
+
+### Verification
+
+The IP and DNS configuration was verified on the Windows environment.
+
+![Static IP and DNS Configuration](screenshots/02-static-ip-dns.png)
 
 ---
 
-## 3. Active Directory Domain Services
+# 3. Active Directory Domain Services
 
-Active Directory Domain Services was installed and the Windows Server was promoted to a domain controller.
+Active Directory Domain Services was configured on the Windows Server.
 
-### Domain
+The domain created for the lab is:
 
 ```text
 corp.albion.local
 ```
 
-### Configuration
+The NetBIOS domain name is:
 
-* New forest created
-* DNS Server installed
-* Global Catalog enabled
-* Domain Controller configured
-* NetBIOS name: `CORP`
-* Forest functional level: Windows Server 2016
-* Domain functional level: Windows Server 2016
+```text
+CORP
+```
 
-The domain controller was restarted after promotion and verified before continuing with client configuration.
+The domain controller is:
+
+```text
+DC
+```
+
+Active Directory provides centralized management of:
+
+* User accounts
+* Computer accounts
+* Security groups
+* Authentication
+* Organizational Units
+* Group Policy
 
 ---
 
-## 4. Active Directory Organizational Structure
+# 4. Organizational Unit Structure
 
-A basic organizational structure was created to represent different departments.
+The Active Directory environment was organized using Organizational Units to represent different departments.
 
 ```text
 corp.albion.local
@@ -201,56 +260,73 @@ corp.albion.local
 └── Groups
 ```
 
-Organizational Units provide a logical structure for managing users and applying administrative policies.
+This structure provides logical organization for user accounts and creates a foundation for applying administrative policies.
 
 ---
 
-## 5. Test User Accounts
+# 5. User Account Creation
 
-Four test users were created to simulate employees from different departments.
+Test users were created to simulate employees within the organization.
 
-| User          | Username  | Department |
+| Employee      | Username  | Department |
 | ------------- | --------- | ---------- |
 | Alex Morgan   | `amorgan` | IT         |
 | Taylor Morgan | `tmorgan` | HR         |
 | Jordan Lee    | `jlee`    | Finance    |
 | Sarah Chen    | `schen`   | Sales      |
 
-These accounts were used to test domain authentication and group-based administration.
+The accounts were placed into their appropriate Organizational Units.
+
+### Skills practiced
+
+* Creating domain user accounts
+* Configuring usernames
+* Managing user objects
+* Organizing users using OUs
+* Preparing accounts for domain authentication
 
 ---
 
-## 6. Security Groups
+# 6. Security Group Configuration
 
-Department and administrative security groups were created.
+Security groups were created to represent different organizational roles.
 
-```text
-IT-Admins
-IT-Support
-HR-Users
-Finance-Users
-Sales-Users
-```
+| Security Group  | Purpose                 |
+| --------------- | ----------------------- |
+| `IT-Admins`     | IT administrative users |
+| `IT-Support`    | IT support users        |
+| `HR-Users`      | HR users                |
+| `Finance-Users` | Finance users           |
+| `Sales-Users`   | Sales users             |
 
 ### Group Membership
 
-| Group         | Assigned User |
-| ------------- | ------------- |
-| IT-Admins     | Alex Morgan   |
-| IT-Support    | Alex Morgan   |
-| HR-Users      | Taylor Morgan |
-| Finance-Users | Jordan Lee    |
-| Sales-Users   | Sarah Chen    |
+```text
+IT-Admins
+└── Alex Morgan
+
+IT-Support
+└── Alex Morgan
+
+HR-Users
+└── Taylor Morgan
+
+Finance-Users
+└── Jordan Lee
+
+Sales-Users
+└── Sarah Chen
+```
 
 The groups were configured as **Global Security Groups**.
 
-This demonstrates a basic role-based approach to account and access management.
+This demonstrates the use of group-based administration rather than assigning access individually to every user.
 
 ---
 
-# 7. Group Policy
+# 7. Group Policy Configuration
 
-A domain-level Group Policy Object named:
+A domain Group Policy Object named:
 
 ```text
 Corp-Password-Policy
@@ -258,138 +334,200 @@ Corp-Password-Policy
 
 was created and linked to the domain.
 
-The policy establishes standardized password and account lockout requirements.
+The policy was configured to establish password and account lockout requirements.
 
 ## Password Policy
 
-Configured settings include:
+| Setting                  | Configuration |
+| ------------------------ | ------------- |
+| Enforce password history | 5 passwords   |
+| Maximum password age     | 90 days       |
+| Minimum password age     | 1 day         |
+| Minimum password length  | 8 characters  |
+| Password complexity      | Enabled       |
+| Reversible encryption    | Disabled      |
 
-| Policy                  | Configuration |
-| ----------------------- | ------------- |
-| Password history        | 5 passwords   |
-| Maximum password age    | 90 days       |
-| Minimum password age    | 1 day         |
-| Minimum password length | 8 characters  |
-| Password complexity     | Enabled       |
-| Reversible encryption   | Disabled      |
+### Verification
 
-## Account Lockout Policy
+The configured password policy was captured as evidence.
 
-| Policy            | Configuration      |
-| ----------------- | ------------------ |
-| Lockout threshold | 5 invalid attempts |
-| Lockout duration  | 15 minutes         |
-| Reset counter     | 15 minutes         |
-
-These controls simulate common baseline security requirements used in Windows enterprise environments.
+![Password Policy](screenshots/07-password-policy.png)
 
 ---
 
-# 8. Windows 11 Domain Client
+# 8. Account Lockout Policy
 
-A Windows 11 virtual machine was configured as the domain client.
+Account lockout controls were configured as part of the domain security policy.
 
-### Network Configuration
+| Setting                      | Configuration      |
+| ---------------------------- | ------------------ |
+| Account lockout threshold    | 5 invalid attempts |
+| Account lockout duration     | 15 minutes         |
+| Reset failed-attempt counter | 15 minutes         |
 
-```text
-IP Address:      192.168.56.10
-Subnet Mask:     255.255.255.0
-Preferred DNS:   192.168.56.20
-```
+These settings help protect domain accounts against repeated incorrect authentication attempts.
 
-Connectivity to the domain controller was verified before attempting the domain join.
+### Verification
+
+The configured account lockout policy was captured as evidence.
+
+![Account Lockout Policy](screenshots/07b-account-lockout-policy.png)
 
 ---
 
-# 9. Domain Join & Authentication
+# 9. Windows 11 Domain Join
 
-The Windows 11 workstation was successfully joined to:
+The Windows 11 virtual machine was configured to communicate with the domain controller and subsequently joined to:
 
 ```text
 corp.albion.local
 ```
 
-A domain user was then used to verify centralized authentication.
+### Steps performed
 
-Example verification:
+1. Configured the Windows 11 network adapter.
+2. Assigned the required IP configuration.
+3. Configured the domain controller as the DNS server.
+4. Verified DNS resolution.
+5. Opened Windows System Properties.
+6. Changed the workstation from a workgroup to the domain.
+7. Entered domain credentials.
+8. Restarted the workstation.
+9. Verified that the workstation was joined to the domain.
 
-```cmd
-whoami
-```
+### Verification
 
-Expected result:
+The Windows 11 system confirmed membership in the domain.
 
-```text
-corp\amorgan
-```
-
-The domain controller responsible for authentication was also verified using:
-
-```cmd
-echo %LOGONSERVER%
-```
-
-Expected result:
-
-```text
-\\DC
-```
-
-This demonstrates successful communication between the Windows 11 client and the Active Directory domain controller.
+![Windows 11 Domain Join](screenshots/03-domain-join.png)
 
 ---
 
-# 10. DNS Verification
+# 10. Domain Authentication Verification
 
-DNS resolution was tested from the Windows 11 client using:
+After joining Windows 11 to the domain, a domain user account was used to authenticate to the workstation.
 
-```cmd
+The test account used was:
+
+```text
+CORP\amorgan
+```
+
+Authentication was verified using Windows command-line tools.
+
+### Commands used
+
+```text
+whoami
+```
+
+and:
+
+```text
+echo %LOGONSERVER%
+```
+
+These commands were used to identify the logged-in domain account and the domain controller responsible for authentication.
+
+### Verification
+
+![Domain Login Verification](screenshots/04-domain-login-verification.png)
+
+This confirms the Windows 11 workstation was able to authenticate using the Active Directory domain account.
+
+---
+
+# 11. Active Directory Computer Account Verification
+
+After joining the Windows 11 workstation to the domain, the corresponding computer account was verified in **Active Directory Users and Computers**.
+
+### Steps performed
+
+1. Opened Active Directory Users and Computers.
+2. Navigated to the domain.
+3. Opened the Computers container.
+4. Located the Windows 11 workstation.
+5. Verified that the computer account existed in Active Directory.
+
+### Verification
+
+![Computer Account in Active Directory](screenshots/05-domain-computer-in-ad.png)
+
+This demonstrates the relationship between a domain-joined workstation and its computer account in Active Directory.
+
+---
+
+# 12. DNS Verification
+
+DNS is a critical dependency for Active Directory.
+
+The Windows 11 client was configured to use:
+
+```text
+192.168.56.20
+```
+
+as its DNS server.
+
+DNS resolution was tested using:
+
+```text
 nslookup DC
 ```
 
 and:
 
-```cmd
+```text
 nslookup corp.albion.local
 ```
 
-Active Directory DNS service is particularly important because Windows domain operations depend heavily on DNS for locating domain controllers and services.
+Successful DNS resolution is important for:
+
+* Domain joining
+* Domain authentication
+* Locating domain controllers
+* Active Directory communication
+* Group Policy processing
 
 ---
 
-# 11. Group Policy Verification
+# 13. Connectivity Verification
 
-Group Policy processing can be verified from the Windows 11 client using:
+Network connectivity between the Windows 11 workstation and the domain controller was tested using ICMP.
 
-```cmd
-gpupdate /force
-```
-
-followed by:
-
-```cmd
-gpresult /r
-```
-
-The expected result is that:
+Example:
 
 ```text
-Corp-Password-Policy
+ping 192.168.56.20
 ```
 
-appears under:
+This verifies basic IP connectivity between the client and domain controller.
+
+Additional troubleshooting commands used during the lab included:
 
 ```text
-Applied Group Policy Objects
+ipconfig /all
 ```
 
-This provides evidence that the domain policy is being processed by the Windows client.
+```text
+nslookup DC
+```
+
+```text
+nslookup corp.albion.local
+```
+
+```text
+whoami
+```
+
+These commands provide useful information when troubleshooting Windows domain and network issues.
 
 ---
 
-# Troubleshooting Methodology
+# 🧪 IT Support Troubleshooting Methodology
 
-The lab was approached using a structured IT troubleshooting methodology:
+The lab follows a structured troubleshooting methodology:
 
 ```text
 Identify
@@ -405,136 +543,143 @@ Verify
 Document
 ```
 
-### Examples
+This approach can be applied to common IT support incidents.
 
-During domain configuration, DNS and network connectivity were verified before attempting domain operations.
+### Example: Domain Login Failure
 
-Useful troubleshooting commands included:
+Investigate:
 
-```cmd
-ipconfig /all
-ping 192.168.56.20
-nslookup DC
-nslookup corp.albion.local
+```text
 whoami
-hostname
+```
+
+Then check:
+
+* Username
+* Domain
+* Network connectivity
+* DNS configuration
+* Domain controller availability
+* Account status
+
+### Example: Domain Join Failure
+
+Check:
+
+```text
+ipconfig /all
+```
+
+```text
+nslookup corp.albion.local
+```
+
+```text
+ping 192.168.56.20
+```
+
+Potential causes include:
+
+* Incorrect DNS configuration
+* Incorrect IP address
+* Domain controller unavailable
+* Network connectivity problems
+* Incorrect domain name
+
+### Example: Group Policy Issue
+
+Use:
+
+```text
 gpupdate /force
+```
+
+and:
+
+```text
 gpresult /r
 ```
 
-This approach helps separate **network problems, DNS problems, authentication problems, and Group Policy problems** instead of treating them as a single issue.
+to refresh and inspect Group Policy processing.
 
 ---
 
-# Evidence & Verification
+# 🔐 Security Concepts
 
-Screenshots are included in the repository to document key implementation stages.
-
-Current evidence:
-
-```text
-screenshots/
-├── 01-server-baseline.png
-├── 02-static-ip-dns.png
-├── 03-domain-join.png
-├── 04-domain-login-verification.png
-├── 05-domain-computer-in-ad.png
-├── 07-password-policy.png
-└── 07b-account-lockout-policy.png
-```
-
-The screenshots provide visual evidence of the server configuration, networking, domain join, authentication, Active Directory computer object, and security policy configuration.
-
-Additional verification evidence can be added as the lab is expanded.
-
----
-
-# IT Support Scenarios
-
-This environment can be used to simulate common entry-level IT support incidents, including:
-
-### Account & Authentication
-
-* User cannot log in
-* Password-related issues
-* Domain authentication failures
-* Account lockout
-* Incorrect credentials
-
-### Windows & Endpoint
-
-* Windows client cannot communicate with the domain
-* DNS configuration problems
-* Incorrect IP configuration
-* Domain connectivity problems
-* Group Policy not applying
-
-### Active Directory
-
-* User account administration
-* Group membership changes
-* Organizational Unit placement
-* Computer account management
-* Authentication troubleshooting
-
-Each scenario can be approached using structured incident triage, technical investigation, resolution, verification, and documentation.
-
----
-
-# Security Considerations
-
-The lab demonstrates several foundational security concepts:
+The lab demonstrates several fundamental Windows security concepts:
 
 * Centralized identity management
-* Role-based security groups
+* Domain-based authentication
+* Security group management
 * Password complexity requirements
 * Password expiration
 * Account lockout protection
 * Organizational Unit structure
-* Group Policy-based configuration
+* Centralized Group Policy
+* Role-based group membership
 
-A production environment would require additional security controls such as:
-
-* Multi-factor authentication
-* Privileged Access Management
-* Microsoft Entra ID integration
-* Endpoint protection
-* Windows Defender configuration
-* LAPS
-* Tiered administrative accounts
-* Security auditing
-* SIEM integration
-* Centralized logging
-* Least-privilege access
-* Network segmentation
-* Backup and recovery procedures
+In a production environment, these concepts would be supplemented with additional controls such as MFA, endpoint protection, auditing, privileged access management, and least-privilege administration.
 
 ---
 
-# Future Lab Expansion
+# 📸 Verification Evidence
 
-The project can be extended with additional enterprise administration scenarios.
+The repository contains evidence from the actual lab implementation.
 
-Planned areas include:
+### Server Baseline
 
-* File server deployment
-* NTFS permissions
-* Shared folder permissions
-* PowerShell administration
+![Server Baseline](screenshots/01-server-baseline.png)
+
+### Static IP & DNS
+
+![Static IP and DNS](screenshots/02-static-ip-dns.png)
+
+### Domain Join
+
+![Domain Join](screenshots/03-domain-join.png)
+
+### Domain Authentication
+
+![Domain Authentication](screenshots/04-domain-login-verification.png)
+
+### Computer Account in Active Directory
+
+![Computer Account in AD](screenshots/05-domain-computer-in-ad.png)
+
+### Password Policy
+
+![Password Policy](screenshots/07-password-policy.png)
+
+### Account Lockout Policy
+
+![Account Lockout Policy](screenshots/07b-account-lockout-policy.png)
+
+---
+
+# 📈 Future Lab Improvements
+
+The current project provides the foundation for additional Windows administration and IT support scenarios.
+
+Planned improvements include:
+
+* Group Policy verification using `gpresult`
+* File and folder permissions
+* NTFS and shared-folder permissions
+* Network drive configuration
 * Additional Group Policy configurations
-* Windows troubleshooting scenarios
-* User onboarding/offboarding workflows
-* Permission troubleshooting
+* Windows Event Viewer troubleshooting
+* PowerShell administration
+* User onboarding and offboarding
 * Software deployment
 * Remote administration
-* Security auditing
-* Additional Windows clients
+* Printer management
+* Additional Windows troubleshooting scenarios
 
-These additions will further develop practical Windows infrastructure and IT support skills.
+These are planned extensions and are not represented as completed functionality in the current lab.
 
 ---
 
-# Repository Structure
+# 📂 Repository Structure
 
 ```text
 Windows-IT-Support-Active-Directory-Lab/
@@ -550,20 +695,14 @@ Windows-IT-Support-Active-Directory-Lab/
 │   ├── 07-password-policy.png
 │   └── 07b-account-lockout-policy.png
 │
-├── documentation/
-│
-├── powershell/
-│
-└── troubleshooting/
+└── ...
 ```
-
-The repository structure is designed to separate project documentation, visual evidence, administration scripts, and troubleshooting material as the lab grows.
 
 ---
 
-# Skills Demonstrated
+# 🎯 Skills Demonstrated
 
-### Windows Administration
+## Windows Administration
 
 * Windows Server 2022
 * Windows 11
@@ -571,101 +710,111 @@ The repository structure is designed to separate project documentation, visual e
 * DNS
 * Group Policy
 * User administration
+* Computer account management
 * Security group management
-* Organizational Units
 * Domain authentication
 
-### Networking
+## Networking
 
-* IPv4 configuration
-* DNS troubleshooting
-* TCP/IP fundamentals
+* IPv4 addressing
+* Static IP configuration
+* DNS configuration
 * Host-Only networking
-* NAT
-* Client/server connectivity
-* Network troubleshooting
+* Network connectivity testing
+* Basic TCP/IP troubleshooting
 
-### IT Support
+## IT Support
 
-* Incident investigation
-* Technical troubleshooting
-* Authentication troubleshooting
-* Endpoint troubleshooting
-* Structured problem solving
-* Documentation
-* Verification and validation
+* Windows troubleshooting
+* Domain login troubleshooting
+* DNS troubleshooting
+* Domain join troubleshooting
+* Group Policy troubleshooting
+* User and account administration
+* Structured incident investigation
+* Technical documentation
+* Evidence-based verification
 
-### Tools
+## Tools
 
 * Oracle VirtualBox
-* PowerShell
-* Command Prompt
 * Active Directory Users and Computers
 * Group Policy Management
-* Windows administrative utilities
+* Command Prompt
+* PowerShell
+* Windows administrative tools
 
 ---
 
-# Portfolio Relevance
+# 💼 Portfolio Relevance
 
-This project demonstrates practical exposure to technologies commonly encountered in entry-level IT infrastructure environments.
+This project demonstrates practical experience relevant to entry-level roles such as:
 
-It is particularly relevant to:
+* **IT Support Technician**
+* **Service Desk Analyst**
+* **Help Desk Analyst**
+* **Desktop Support Technician**
+* **Technical Support Specialist**
+* **MSP Support Technician**
+* **Junior System Administrator**
+* **Junior IT Infrastructure Technician**
 
-* IT Support Technician
-* Service Desk Analyst
-* Help Desk Analyst
-* Desktop Support Technician
-* Technical Support Specialist
-* MSP Support Technician
-* Junior Systems Administrator
-* Junior Network Support Technician
-
-The focus is on **hands-on implementation and troubleshooting**, rather than simply listing technologies on a resume.
+Instead of simply listing Active Directory, DNS, Windows, and Group Policy as skills, this project demonstrates how these technologies were configured, used, and verified in a controlled environment.
 
 ---
 
-# Key Takeaways
+# 🧠 Key Takeaways
 
-This lab strengthened practical understanding of how a Windows enterprise environment operates from an IT support perspective.
+This project strengthened my practical understanding of Windows infrastructure and enterprise IT support.
 
-The project demonstrates the ability to:
+Key areas practiced include:
 
-* Deploy and configure Windows Server
-* Configure a Windows domain controller
-* Implement Active Directory
-* Manage users and security groups
-* Organize users with Organizational Units
-* Configure Group Policy
-* Configure Windows client networking
-* Join Windows clients to a domain
-* Verify domain authentication
-* Troubleshoot DNS and connectivity
-* Use Windows administrative tools
-* Document technical implementation and evidence
+* Deploying Windows Server
+* Configuring Active Directory
+* Configuring DNS
+* Creating and managing users
+* Organizing users with OUs
+* Creating security groups
+* Joining Windows 11 to a domain
+* Verifying domain authentication
+* Managing computer accounts
+* Configuring Group Policy
+* Implementing password policies
+* Implementing account lockout policies
+* Troubleshooting network and domain connectivity
+* Using Windows administration tools
+* Documenting technical work with evidence
 
-The overall workflow reinforces an important IT support principle:
-
-> **Configure → Test → Troubleshoot → Verify → Document**
-
----
-
-# Project Status
-
-**Current status:** Active development
-
-The core Active Directory environment, organizational structure, test accounts, security groups, Group Policy configuration, Windows 11 domain client, and domain authentication workflow have been implemented.
-
-The lab will continue to expand with additional Windows administration, permissions, PowerShell, and troubleshooting scenarios.
+The project reinforced the importance of combining **configuration, troubleshooting, verification, and documentation** when supporting IT infrastructure.
 
 ---
 
-## About This Project
+# 👤 About This Project
 
-This is an **independently built hands-on IT infrastructure lab** created to develop practical Windows administration and IT support skills.
+This is an **independently built hands-on IT administration lab** created to strengthen practical Windows, Active Directory, networking, and troubleshooting skills.
+
+The project is designed as part of my technical portfolio to demonstrate hands-on experience beyond certifications and coursework.
 
 **Focus Areas:**
 
-`Windows Server` · `Active Directory` · `DNS` · `Group Policy` · `Windows 11` · `IT Support` · `Troubleshooting` · `PowerShell` · `Networking`
+`IT Support` · `Windows` · `Active Directory` · `DNS` · `Group Policy` · `Troubleshooting` · `Microsoft` · `Networking` · `Virtualization`
 
-**Author:** Rikit Thapa
+---
+
+## 📌 Project Status
+
+| Component                            | Status       |
+| ------------------------------------ | ------------ |
+| Windows Server 2022                  | ✅ Completed  |
+| Active Directory Domain Services     | ✅ Completed  |
+| DNS Configuration                    | ✅ Completed  |
+| Organizational Units                 | ✅ Completed  |
+| User Accounts                        | ✅ Completed  |
+| Security Groups                      | ✅ Completed  |
+| Windows 11 Domain Join               | ✅ Completed  |
+| Domain Authentication                | ✅ Completed  |
+| Password Policy                      | ✅ Completed  |
+| Account Lockout Policy               | ✅ Completed  |
+| Verification Screenshots             | ✅ 7 captured |
+| Additional Troubleshooting Scenarios | 🔄 Planned   |
+| Group Policy Verification Evidence   | 🔄 Planned   |
